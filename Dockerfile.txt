@@ -1,0 +1,32 @@
+# Используем базовый образ Ubuntu
+FROM ubuntu:latest
+
+# Устанавливаем метку с информацией об авторе
+LABEL maintainer="Davydov Denis 231-351"
+
+# Обновляем пакетный менеджер и устанавливаем необходимые пакеты
+RUN apt-get update && apt-get install -y \
+    gcc \
+    g++ \
+    make \
+    libsqlite3-dev
+
+# Устанавливаем рабочую директорию
+WORKDIR /MyProj_Davydov_231-351
+
+# Копируем файлы проекта в контейнер
+COPY FilmDB.h /MyProj_Davydov_231-351/
+COPY FilmDB.cpp /MyProj_Davydov_231-351/
+COPY main.cpp /MyProj_Davydov_231-351/
+COPY Test_FilmDB.cpp /MyProj_Davydov_231-351/
+COPY movieDB.sqlite /MyProj_Davydov_231-351/
+
+# Компилируем проект
+RUN g++ -o exam_Program main.cpp FilmDB.cpp -lsqlite3
+RUN g++ -o test_Program Test_FilmDB.cpp FilmDB.cpp -lsqlite3
+
+# Устанавливаем значение параметра программы по умолчанию
+ENV PARAM=default_value
+
+# Запуск программы с параметром
+CMD ["./exam_Program", "default_value"]
